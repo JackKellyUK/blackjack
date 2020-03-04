@@ -1,4 +1,4 @@
-<b>Repository</b>: blackjack
+<b>Repository</b>: Blackjack V1.0
 
 <b>Author</b>: Jack Kelly
 
