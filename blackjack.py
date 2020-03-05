@@ -1,7 +1,7 @@
 import random
 #File Name: blackjack.py
 #Author: Jack Kelly
-#Version: V1.1
+#Version: V1.11
 
 def numberText(array):
     cardName = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
@@ -70,13 +70,8 @@ def playerHit(index,array,text):
 #--- Start of game
 print("Welcome to Blackjack!")
 
-dealerArray = []
-for i in range(0,5):
-    dealerArray.append(random.randint(1,13))
-
-playerArray = []
-for i in range(0,5):
-    playerArray.append(random.randint(1,13))
+dealerArray = random.sample(range(1, 13), 5)
+playerArray = random.sample(range(1, 13), 5)
 
 playerArrayText = numberText(playerArray)
 dealerArrayText = numberText(dealerArray)
