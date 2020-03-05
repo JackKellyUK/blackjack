@@ -1,17 +1,28 @@
 import random
 #File Name: blackjack.py
 #Author: Jack Kelly
+#Version: V1.1
+
+def numberText(array):
+    cardName = {1:"Ace", 2:"Two", 3:"Three", 4:"Four", 5:"Five", 6:"Six", 7:"Seven", 8:"Eight", 9:"Nine", 10:"Ten", 11:"Jack", 12:"Queen", 13:"King"}
+    cardSuits = ["Hearts","Spades","Diamonds","Clubs"]
+    newArray = []
+
+    for i in range(0,len(array)):
+        newArray.append(cardName[array[i]] + " Of " + random.choice(cardSuits))
+
+    return newArray
 
 def calculateTotal(index,array):
     total = 0
     aces = array.count(1)
 
     for i in range (0,index + 1):
-        total = total + min(array[i],10)
+        total += min(array[i],10)
 
     for i in range (0,(aces - 1)):
         if(total + 10 <= 21):
-            total = total + 10
+            total += 10
 
     return total
 
@@ -19,41 +30,42 @@ def calculateDealer(index,array):
     total = calculateTotal(index,array)
 
     while (not(total > 21) and total < 17 and index < 5):
-        index = index + 1
+        index += 1
         total = calculateTotal(index,array)
     
     return total
 
-def playerHit(index,array):
-    index = index + 1
-    print("Your cards are:",str(array[0:index + 1])[1:-1])
+def printTotal(playerTotal,dealerTotal):
+    print("Player Total:",playerTotal)
+    print("Dealer Total:",dealerTotal)
 
-    if (calculateTotal(index,array) > 21 or index > 5):
-        result = "stick"
+def playerHit(index,array,text):
+    index += 1
+    print("Your cards are:",(', '.join(text[0:index + 1])))
+
+    if (calculateTotal(index,array) >= 21 or index > 4):
+        result = "S"
     else:
-        result = input("Would you like to stick or twist? ")
+        result = input("Would you like to [H]it or [S]tand? ").upper()
 
-    while (result != "stick" and result != "twist"):
-        result = input("Please enter stick or twist! ")
+    while (result != "S" and result != "H"):
+        result = input("Please enter [S]tand or [H]it! ").upper()
 
-    if(result == "stick"):
-        dealerTotal = calculateDealer(index,array)
+    if(result == "S"):
+        dealerTotal = calculateDealer(dealerIndex,dealerArray)
         playerTotal = calculateTotal(index,array)
 
         if(dealerTotal == playerTotal or (playerTotal > 21 and dealerTotal > 21)):
             print("You drew!")
-            print ("Player Total:",playerTotal)
-            print("Dealer total:",dealerTotal)
+            printTotal(playerTotal,dealerTotal)
         elif((dealerTotal > 21 and playerTotal <= 21) or (playerTotal <= 21 and playerTotal > dealerTotal) or (playerTotal == 21 and dealerTotal != 21)):
             print("You won!")
-            print ("Player Total:",playerTotal)
-            print("Dealer total:",dealerTotal)
+            printTotal(playerTotal,dealerTotal)
         else:
             print("You lost!")
-            print ("Player Total:",playerTotal)
-            print("Dealer total:",dealerTotal)
+            printTotal(playerTotal,dealerTotal)
     else:
-        playerHit(index,array)
+        playerHit(index,array,text)
 
 #--- Start of game
 print("Welcome to Blackjack!")
@@ -66,31 +78,35 @@ playerArray = []
 for i in range(0,5):
     playerArray.append(random.randint(1,13))
 
+playerArrayText = numberText(playerArray)
+dealerArrayText = numberText(dealerArray)
+
 playerIndex = 1
 dealerIndex = 1
 
-print("Your cards are:",str(playerArray[0:playerIndex + 1])[1:-1])
+print("Your cards are:",(', '.join(playerArrayText[0:playerIndex + 1])))
+print("The dealer draws a",dealerArrayText[0])
 
-result = input("Would you like to stick or twist? ")
+if (calculateTotal(playerIndex,playerArray) == 21):
+    result = "S"
+else:
+    result = input("Would you like to [H]it or [S]tand? ").upper()
 
-while (result != "stick" and result != "twist"):
-    result = input("Please enter stick or twist! ")
+while (result != "S" and result != "H"):
+    result = input("Please enter [S]tand or [H]it! ").upper()
 
-if(result == "stick"):
+if(result == "S"):
     dealerTotal = calculateDealer(dealerIndex,dealerArray)
     playerTotal = calculateTotal(playerIndex,playerArray)
 
     if(dealerTotal == playerTotal or (playerTotal > 21 and dealerTotal > 21)):
         print("You drew!")
-        print ("Player Total:",playerTotal)
-        print("Dealer total:",dealerTotal)
+        printTotal(playerTotal,dealerTotal)
     elif(dealerTotal > 21 and playerTotal <= 21 or (playerTotal <= 21 and playerTotal > dealerTotal) or (playerTotal == 21 and dealerTotal != 21)):
         print("You won!")
-        print ("Player Total:",playerTotal)
-        print("Dealer total:",dealerTotal)
+        printTotal(playerTotal,dealerTotal)
     else:
         print("You lost!")
-        print ("Player Total:",playerTotal)
-        print("Dealer total:",dealerTotal)
+        printTotal(playerTotal,dealerTotal)
 else:
-    playerHit(playerIndex,playerArray)
+    playerHit(playerIndex,playerArray,playerArrayText)
